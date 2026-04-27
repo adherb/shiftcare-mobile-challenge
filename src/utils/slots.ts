@@ -103,6 +103,6 @@ export function generateSlots(doctor: Doctor, date: Date): Slot[] {
 // Stable unique key for a slot. The bookings layer uses this to detect
 // double-bookings and mark slots as taken in the UI. Pipe separator avoids
 // collisions with any character that might appear inside a doctor's name.
-export function slotKey(slot: Slot): string {
+export function slotKey(slot: Pick<Slot, 'doctorName' | 'date' | 'startTime'>): string {
   return `${slot.doctorName}|${slot.date}|${slot.startTime}`;
 }
