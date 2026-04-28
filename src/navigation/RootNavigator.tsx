@@ -4,13 +4,13 @@ import DoctorsListScreen from '../screens/DoctorsListScreen';
 import DoctorDetailScreen from '../screens/DoctorDetailScreen';
 import BookingConfirmationScreen from '../screens/BookingConfirmationScreen';
 import MyBookingsScreen from '../screens/MyBookingsScreen';
+import { Slot } from '../types';
 
 export type RootStackParamList = {
   DoctorsList: undefined;
   DoctorDetail: { doctorName: string };
-  BookingConfirmation: { bookingId: string };
+  BookingConfirmation: { slot: Slot };
   MyBookings: undefined;
-  // TODO: Refine param types as you build out screen props
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
