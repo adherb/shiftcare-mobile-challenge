@@ -53,7 +53,7 @@ export function bookingsReducer(state: State, action: Action): State {
 // Context
 
 type BookingsContextValue = State & {
-  addBooking: (slot: Slot) => Promise<void>;
+  addBooking: (slot: Slot) => Promise<{ success: boolean; error?: string }>;
   cancelBooking: (bookingId: string) => Promise<void>;
   isSlotBooked: (slot: Slot) => boolean;
 };
@@ -97,10 +97,11 @@ export function BookingsProvider({ children }: { children: ReactNode }) {
     return state.bookings.some((b) => slotKey(b) === key);
   };
 
-  const addBooking = async (slot: Slot): Promise<void> => {
+  const addBooking = async (slot: Slot): Promise<{ success: boolean; error?: string }> => {
     if (isSlotBooked(slot)) {
-      dispatch({ type: 'STORAGE_ERROR', error: 'Slot is already booked' });
-      return;
+      const message = 'Slot is already booked';
+      dispatch({ type: 'STORAGE_ERROR', error: message });
+      return { success: false, error: message };
     }
 
     const booking: Booking = {
@@ -113,6 +114,7 @@ export function BookingsProvider({ children }: { children: ReactNode }) {
     };
 
     dispatch({ type: 'ADD_BOOKING', booking });
+    return { success: true };
   };
 
   const cancelBooking = async (bookingId: string): Promise<void> => {
