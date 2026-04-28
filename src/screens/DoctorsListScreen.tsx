@@ -13,9 +13,27 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import useDoctors from '../hooks/useDoctors';
+import { Ionicons } from '@expo/vector-icons';
 import { Doctor } from '../types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DoctorsList'>;
+
+const AVATAR_COLORS = ['#007AFF', '#34C759', '#FF9500', '#AF52DE', '#FF3B30', '#5856D6'];
+
+function getAvatarColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function formatTimezone(tz: string): string {
+  const parts = tz.split('/');
+  const city = parts[parts.length - 1].replace(/_/g, ' ');
+  const country = parts[0];
+  return `${city}, ${country}`;
+}
 
 export default function DoctorsListScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -54,8 +72,14 @@ export default function DoctorsListScreen() {
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       onPress={() => navigation.navigate('DoctorDetail', { doctorName: item.name })}
     >
-      <Text style={styles.doctorName}>{item.name}</Text>
-      <Text style={styles.timezone}>{item.timezone}</Text>
+      <View style={[styles.avatar, { backgroundColor: getAvatarColor(item.name) }]}>
+        <Ionicons name="person" size={20} color="#fff" />
+      </View>
+      <View style={styles.cardContent}>
+        <Text style={styles.doctorName}>{item.name}</Text>
+        <Text style={styles.timezone}>{formatTimezone(item.timezone)}</Text>
+      </View>
+      <Text style={styles.chevron}>›</Text>
     </Pressable>
   );
 
@@ -88,6 +112,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 16,
     minHeight: 44,
@@ -95,6 +121,17 @@ const styles = StyleSheet.create({
   },
   cardPressed: {
     opacity: 0.6,
+  },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardContent: {
+    flex: 1,
+    marginLeft: 12,
   },
   doctorName: {
     fontSize: 17,
@@ -105,6 +142,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 4,
+  },
+  chevron: {
+    fontSize: 22,
+    color: '#ccc',
+    marginLeft: 8,
   },
   separator: {
     height: StyleSheet.hairlineWidth,

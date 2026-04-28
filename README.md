@@ -10,7 +10,9 @@
 
 ## Known Limitations & Future Enhancements
 
-<!-- TODO: List what is missing or could be improved -->
+- The API does not consistently prefix doctor names with "Dr." -- only one entry includes it. Names are displayed as-is rather than assuming which practitioners hold a doctor title.
+
+<!-- TODO: List additional items that are missing or could be improved -->
 
 ## Architecture Notes
 
