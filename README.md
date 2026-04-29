@@ -79,6 +79,8 @@ src/
 
 **Animations.** Used React Native's built-in `LayoutAnimation` for booking row removal -- native-driven, zero dependency. For richer gesture-based motion (swipe interactions, drag-to-reorder, parallax) I'd reach for `react-native-reanimated`, but a take-home with one cancel animation doesn't justify it.
 
+**Offline-first.** Both bookings and doctor data persist to AsyncStorage. Bookings are fully offline -- they're created, read, and cancelled locally with no server dependency. Doctor data uses a cache-then-network strategy: `useDoctors` loads cached data immediately so the UI renders without waiting for the network, then fetches fresh data in the background and updates the cache. If the network fetch fails and cached data exists, the app continues working with stale data rather than showing an error. This means the app is fully usable after the first successful launch, even without connectivity.
+
 **Components.** Components are kept inline within their screens unless the same UI appears in multiple places. Extracted components are `LoadingState` (used on three screens), `ErrorState` (used on two), and `Avatar`. Format helpers live in `src/utils/format.ts` since they're used across three screens. Other patterns -- slot cells, day pills, booking rows, doctor card rows -- are kept inline as single-screen presentational code; speculative extraction would add file overhead without saving lines.
 
 ## Known Limitations
@@ -124,7 +126,7 @@ Not covered: screen rendering, navigation flows, API fetch integration, useDocto
 - Separate upcoming and past sections on My Bookings, filtered by current date
 - Relative timezone offset displayed alongside the city ("Sydney, Australia -- 1 hour ahead of you")
 - Push notifications for upcoming appointments
-- Offline-first booking queue that syncs when connectivity returns
+- Offline booking queue that syncs with a real backend when connectivity returns
 
 **Testing**
 - Component tests for screens using the already-installed `@testing-library/react-native`
