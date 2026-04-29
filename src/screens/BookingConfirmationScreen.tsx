@@ -5,6 +5,7 @@ import { useNavigation, useRoute, RouteProp, CommonActions } from '@react-naviga
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookings } from '../context/BookingsContext';
+import useDoctors from '../hooks/useDoctors';
 
 type RouteProps = RouteProp<RootStackParamList, 'BookingConfirmation'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'BookingConfirmation'>;
@@ -18,6 +19,13 @@ function formatDateForDisplay(isoDate: string): string {
     month: 'long',
     day: 'numeric',
   }).format(date);
+}
+
+function formatTimezone(tz: string): string {
+  const parts = tz.split('/');
+  const city = parts[parts.length - 1].replace(/_/g, ' ');
+  const country = parts[0];
+  return `${city}, ${country}`;
 }
 
 function formatTimeForDisplay(time24: string): string {
@@ -34,6 +42,8 @@ export default function BookingConfirmationScreen() {
   const navigation = useNavigation<NavigationProps>();
   const { slot } = route.params;
   const { addBooking } = useBookings();
+  const { doctors } = useDoctors();
+  const doctor = doctors.find((d) => d.name === slot.doctorName);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,7 +95,18 @@ export default function BookingConfirmationScreen() {
               {formatTimeForDisplay(slot.startTime)} - {formatTimeForDisplay(slot.endTime)}
             </Text>
           </View>
+          {doctor && (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.row}>
+                <Text style={styles.label}>Timezone</Text>
+                <Text style={styles.value}>{formatTimezone(doctor.timezone)}</Text>
+              </View>
+            </>
+          )}
         </View>
+
+        <Text style={styles.tzNote}>Times shown in the doctor's local timezone.</Text>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
@@ -144,6 +165,12 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#ddd',
+  },
+  tzNote: {
+    fontSize: 13,
+    color: '#999',
+    marginTop: 12,
+    textAlign: 'center',
   },
   errorText: {
     fontSize: 14,
