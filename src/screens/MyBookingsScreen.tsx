@@ -8,6 +8,9 @@ import {
   StyleSheet,
   Alert,
   ListRenderItem,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +18,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookings } from '../context/BookingsContext';
 import { Booking } from '../types';
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'MyBookings'>;
 
@@ -63,7 +70,14 @@ export default function MyBookingsScreen() {
       `${booking.doctorName} on ${formatDateForDisplay(booking.date)} at ${formatTimeForDisplay(booking.startTime)}`,
       [
         { text: 'Keep booking', style: 'cancel' },
-        { text: 'Cancel booking', style: 'destructive', onPress: () => cancelBooking(booking.id) },
+        {
+          text: 'Cancel booking',
+          style: 'destructive',
+          onPress: () => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            cancelBooking(booking.id);
+          },
+        },
       ]
     );
   };
