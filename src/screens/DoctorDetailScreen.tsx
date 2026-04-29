@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import { generateSlots, slotKey } from '../utils/slots';
 import { Slot } from '../types';
 import { formatTimeForDisplay, formatTimezone } from '../utils/format';
 import LoadingState from '../components/LoadingState';
+import Avatar from '../components/Avatar';
 
 type RouteProps = RouteProp<RootStackParamList, 'DoctorDetail'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'DoctorDetail'>;
@@ -50,12 +51,6 @@ export default function DoctorDetailScreen() {
   }, []);
 
   const doctor = doctors.find((d) => d.name === doctorName);
-
-  useLayoutEffect(() => {
-    if (doctor) {
-      navigation.setOptions({ title: doctor.name, headerBackTitle: 'Back' });
-    }
-  }, [navigation, doctor]);
 
   // Avoids regenerating slot objects on every render.
   const slots = useMemo(
@@ -96,8 +91,13 @@ export default function DoctorDetailScreen() {
   // VirtualizedLists warning).
   const listHeader = (
     <View>
-      <Text style={styles.doctorName}>{doctor.name}</Text>
-      <Text style={styles.timezone}>{formatTimezone(doctor.timezone)}</Text>
+      <View style={styles.doctorHeader}>
+        <Avatar size={48} />
+        <View style={styles.doctorHeaderText}>
+          <Text style={styles.doctorName}>{doctor.name}</Text>
+          <Text style={styles.timezone}>{formatTimezone(doctor.timezone)}</Text>
+        </View>
+      </View>
       <Text style={styles.tzNote}>Times shown in the doctor's local timezone.</Text>
 
       <ScrollView
@@ -181,6 +181,15 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
   },
+  doctorHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  doctorHeaderText: {
+    flex: 1,
+    marginLeft: 12,
+  },
   doctorName: {
     fontSize: 22,
     fontWeight: '700',
@@ -189,7 +198,7 @@ const styles = StyleSheet.create({
   timezone: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
+    marginTop: 2,
   },
   tzNote: {
     fontSize: 13,

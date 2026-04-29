@@ -12,22 +12,12 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import useDoctors from '../hooks/useDoctors';
-import { Ionicons } from '@expo/vector-icons';
 import { Doctor } from '../types';
 import { formatTimezone } from '../utils/format';
 import LoadingState from '../components/LoadingState';
+import Avatar from '../components/Avatar';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DoctorsList'>;
-
-const AVATAR_COLORS = ['#007AFF', '#34C759', '#FF9500', '#AF52DE', '#FF3B30', '#5856D6'];
-
-function getAvatarColor(name: string): string {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
 
 export default function DoctorsListScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -74,9 +64,7 @@ export default function DoctorsListScreen() {
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       onPress={() => navigation.navigate('DoctorDetail', { doctorName: item.name })}
     >
-      <View style={[styles.avatar, { backgroundColor: getAvatarColor(item.name) }]}>
-        <Ionicons name="person" size={20} color="#fff" />
-      </View>
+      <Avatar size={44} />
       <View style={styles.cardContent}>
         <Text style={styles.doctorName}>{item.name}</Text>
         <Text style={styles.timezone}>{formatTimezone(item.timezone)}</Text>
@@ -128,13 +116,6 @@ const styles = StyleSheet.create({
   },
   cardPressed: {
     opacity: 0.6,
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   cardContent: {
     flex: 1,
