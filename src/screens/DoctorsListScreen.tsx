@@ -16,6 +16,7 @@ import { Doctor } from '../types';
 import { formatTimezone } from '../utils/format';
 import LoadingState from '../components/LoadingState';
 import Avatar from '../components/Avatar';
+import ErrorState from '../components/ErrorState';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DoctorsList'>;
 
@@ -41,14 +42,7 @@ export default function DoctorsListScreen() {
   }
 
   if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable style={styles.retryButton} onPress={refetch}>
-          <Text style={styles.retryText}>Retry</Text>
-        </Pressable>
-      </View>
-    );
+    return <ErrorState message={error} onRetry={refetch} />;
   }
 
   if (doctors.length === 0) {
@@ -140,23 +134,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#ddd',
     marginHorizontal: 16,
-  },
-  errorText: {
-    fontSize: 15,
-    color: '#c00',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  retryButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-  },
-  retryText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
   },
   emptyText: {
     fontSize: 15,

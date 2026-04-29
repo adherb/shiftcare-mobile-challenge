@@ -19,6 +19,7 @@ import { generateSlots, slotKey } from '../utils/slots';
 import { Slot } from '../types';
 import { formatTimeForDisplay, formatTimezone } from '../utils/format';
 import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 import Avatar from '../components/Avatar';
 
 type RouteProps = RouteProp<RootStackParamList, 'DoctorDetail'>;
@@ -69,14 +70,7 @@ export default function DoctorDetailScreen() {
   }
 
   if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable style={styles.retryButton} onPress={refetch}>
-          <Text style={styles.retryText}>Retry</Text>
-        </Pressable>
-      </View>
-    );
+    return <ErrorState message={error} onRetry={refetch} />;
   }
 
   if (!doctor) {
@@ -272,23 +266,6 @@ const styles = StyleSheet.create({
   slotTextBooked: {
     color: '#999',
     textDecorationLine: 'line-through',
-  },
-  errorText: {
-    fontSize: 15,
-    color: '#c00',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  retryButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-  },
-  retryText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
   },
   emptyText: {
     fontSize: 15,
