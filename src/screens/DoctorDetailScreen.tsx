@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -52,6 +52,12 @@ export default function DoctorDetailScreen() {
 
   const doctor = doctors.find((d) => d.name === doctorName);
 
+  useLayoutEffect(() => {
+    if (doctor) {
+      navigation.setOptions({ title: doctor.name });
+    }
+  }, [navigation, doctor]);
+
   // Avoids regenerating slot objects on every render.
   const slots = useMemo(
     () => (doctor ? generateSlots(doctor, selectedDate) : []),
@@ -94,11 +100,10 @@ export default function DoctorDetailScreen() {
       <View style={styles.doctorHeader}>
         <Avatar size={48} />
         <View style={styles.doctorHeaderText}>
-          <Text style={styles.doctorName}>{doctor.name}</Text>
           <Text style={styles.timezone}>{formatTimezone(doctor.timezone)}</Text>
+          <Text style={styles.tzNote}>Times shown in the doctor's local timezone.</Text>
         </View>
       </View>
-      <Text style={styles.tzNote}>Times shown in the doctor's local timezone.</Text>
 
       <ScrollView
         horizontal
@@ -189,11 +194,6 @@ const styles = StyleSheet.create({
   doctorHeaderText: {
     flex: 1,
     marginLeft: 12,
-  },
-  doctorName: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#111',
   },
   timezone: {
     fontSize: 14,
