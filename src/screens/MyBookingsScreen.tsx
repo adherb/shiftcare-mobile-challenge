@@ -13,7 +13,7 @@ import {
   UIManager,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookings } from '../context/BookingsContext';
@@ -100,7 +100,10 @@ export default function MyBookingsScreen() {
         </Text>
         <Pressable
           style={({ pressed }) => [styles.browseButton, pressed && styles.browseButtonPressed]}
-          onPress={() => navigation.navigate('DoctorsList')}
+          onPress={() => navigation.dispatch(CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'DoctorsList' }],
+          }))}
         >
           <Text style={styles.browseText}>Browse Doctors</Text>
         </Pressable>
