@@ -78,7 +78,7 @@ export default function BookingConfirmationScreen() {
       <View style={styles.content}>
         <Text style={styles.heading}>Confirm Your Booking</Text>
 
-        <View style={styles.card}>
+        <View>
           <View style={styles.row}>
             <Text style={styles.label}>Doctor</Text>
             <Text style={styles.value}>{slot.doctorName}</Text>
@@ -138,11 +138,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111',
     marginBottom: 20,
-  },
-  card: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 12,
-    padding: 16,
   },
   row: {
     flexDirection: 'row',

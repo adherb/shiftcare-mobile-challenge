@@ -67,7 +67,7 @@ export default function DoctorDetailScreen() {
 
   useLayoutEffect(() => {
     if (doctor) {
-      navigation.setOptions({ title: doctor.name });
+      navigation.setOptions({ title: doctor.name, headerBackTitle: 'Back' });
     }
   }, [navigation, doctor]);
 

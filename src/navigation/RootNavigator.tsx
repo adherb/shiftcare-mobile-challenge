@@ -31,7 +31,7 @@ export default function RootNavigator() {
       <Stack.Screen
         name="BookingConfirmation"
         component={BookingConfirmationScreen}
-        options={{ title: 'Booking Confirmed' }}
+        options={{ title: 'Booking Confirmed', headerBackTitle: 'Back' }}
       />
       <Stack.Screen
         name="MyBookings"
