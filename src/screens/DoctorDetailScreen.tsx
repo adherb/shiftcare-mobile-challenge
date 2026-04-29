@@ -1,12 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useLayoutEffect } from 'react';
 import {
   View,
   Text,
   FlatList,
+  ScrollView,
   Pressable,
   ActivityIndicator,
   StyleSheet,
   ListRenderItem,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -19,6 +21,21 @@ import { Slot } from '../types';
 
 type RouteProps = RouteProp<RootStackParamList, 'DoctorDetail'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'DoctorDetail'>;
+
+function formatTimeForDisplay(time24: string): string {
+  const [hourStr, minuteStr] = time24.split(':');
+  const hour = Number(hourStr);
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minuteStr} ${period}`;
+}
+
+function formatTimezone(tz: string): string {
+  const parts = tz.split('/');
+  const city = parts[parts.length - 1].replace(/_/g, ' ');
+  const country = parts[0];
+  return `${city}, ${country}`;
+}
 
 function formatDayLabel(date: Date): { weekday: string; day: string } {
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -47,6 +64,12 @@ export default function DoctorDetailScreen() {
   }, []);
 
   const doctor = doctors.find((d) => d.name === doctorName);
+
+  useLayoutEffect(() => {
+    if (doctor) {
+      navigation.setOptions({ title: doctor.name });
+    }
+  }, [navigation, doctor]);
 
   // Avoids regenerating slot objects on every render.
   const slots = useMemo(
@@ -93,10 +116,14 @@ export default function DoctorDetailScreen() {
   const listHeader = (
     <View>
       <Text style={styles.doctorName}>{doctor.name}</Text>
-      <Text style={styles.timezone}>Timezone: {doctor.timezone}</Text>
+      <Text style={styles.timezone}>{formatTimezone(doctor.timezone)}</Text>
       <Text style={styles.tzNote}>Times shown in the doctor's local timezone.</Text>
 
-      <View style={styles.dayPicker}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.dayPickerContent}
+      >
         {nextSevenDays.map((date) => {
           const selected = isSameDay(date, selectedDate);
           const { weekday, day } = formatDayLabel(date);
@@ -115,7 +142,7 @@ export default function DoctorDetailScreen() {
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
     </View>
   );
 
@@ -130,7 +157,7 @@ export default function DoctorDetailScreen() {
         onPress={() => navigation.navigate('BookingConfirmation', { slot: item })}
       >
         <Text style={[styles.slotText, booked && styles.slotTextBooked]}>
-          {item.startTime}
+          {formatTimeForDisplay(item.startTime)}
         </Text>
       </Pressable>
     );
@@ -151,6 +178,12 @@ export default function DoctorDetailScreen() {
     </SafeAreaView>
   );
 }
+
+const SCREEN_PADDING = 16;
+const COLUMN_GAP = 8;
+const NUM_COLUMNS = 3;
+const SLOT_WIDTH =
+  (Dimensions.get('window').width - SCREEN_PADDING * 2 - COLUMN_GAP * (NUM_COLUMNS - 1)) / NUM_COLUMNS;
 
 const styles = StyleSheet.create({
   container: {
@@ -183,10 +216,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginBottom: 16,
   },
-  dayPicker: {
+  dayPickerContent: {
     flexDirection: 'row',
-    marginBottom: 20,
+    paddingVertical: 4,
     gap: 8,
+    marginBottom: 20,
   },
   dayPill: {
     width: 64,
@@ -222,9 +256,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   slotCell: {
-    flex: 1,
+    width: SLOT_WIDTH,
     minHeight: 44,
     padding: 12,
+    marginVertical: 4,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -236,6 +271,8 @@ const styles = StyleSheet.create({
   },
   slotBooked: {
     backgroundColor: '#f0f0f0',
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   slotText: {
     fontSize: 15,
