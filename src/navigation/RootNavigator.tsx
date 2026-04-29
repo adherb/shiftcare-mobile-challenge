@@ -26,7 +26,7 @@ export default function RootNavigator() {
       <Stack.Screen
         name="DoctorDetail"
         component={DoctorDetailScreen}
-        options={{ title: 'Doctor Detail' }}
+        options={{ title: 'Doctor Detail', headerBackTitle: 'Back' }}
       />
       <Stack.Screen
         name="BookingConfirmation"
