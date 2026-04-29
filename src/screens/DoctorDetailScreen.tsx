@@ -5,7 +5,6 @@ import {
   FlatList,
   ScrollView,
   Pressable,
-  ActivityIndicator,
   StyleSheet,
   ListRenderItem,
   Dimensions,
@@ -19,6 +18,7 @@ import { useBookings } from '../context/BookingsContext';
 import { generateSlots, slotKey } from '../utils/slots';
 import { Slot } from '../types';
 import { formatTimeForDisplay, formatTimezone } from '../utils/format';
+import LoadingState from '../components/LoadingState';
 
 type RouteProps = RouteProp<RootStackParamList, 'DoctorDetail'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'DoctorDetail'>;
@@ -64,12 +64,7 @@ export default function DoctorDetailScreen() {
   );
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
+    return <LoadingState message="Loading..." />;
   }
 
   if (error) {
@@ -268,11 +263,6 @@ const styles = StyleSheet.create({
   slotTextBooked: {
     color: '#999',
     textDecorationLine: 'line-through',
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 15,
-    color: '#666',
   },
   errorText: {
     fontSize: 15,

@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   Pressable,
-  ActivityIndicator,
   StyleSheet,
   Alert,
   ListRenderItem,
@@ -19,6 +18,7 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookings } from '../context/BookingsContext';
 import { Booking } from '../types';
 import { formatDateForDisplay, formatTimeForDisplay } from '../utils/format';
+import LoadingState from '../components/LoadingState';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -62,12 +62,7 @@ export default function MyBookingsScreen() {
   };
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Loading your bookings...</Text>
-      </View>
-    );
+    return <LoadingState message="Loading your bookings..." />;
   }
 
   if (bookings.length === 0) {
@@ -170,11 +165,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#ddd',
     marginHorizontal: 16,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 15,
-    color: '#666',
   },
   emptyTitle: {
     fontSize: 18,

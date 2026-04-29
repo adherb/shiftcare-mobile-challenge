@@ -3,7 +3,6 @@ import {
   View,
   Text,
   FlatList,
-  ActivityIndicator,
   Pressable,
   StyleSheet,
   ListRenderItem,
@@ -16,6 +15,7 @@ import useDoctors from '../hooks/useDoctors';
 import { Ionicons } from '@expo/vector-icons';
 import { Doctor } from '../types';
 import { formatTimezone } from '../utils/format';
+import LoadingState from '../components/LoadingState';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DoctorsList'>;
 
@@ -47,12 +47,7 @@ export default function DoctorsListScreen() {
   }, [navigation]);
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Loading doctors...</Text>
-      </View>
-    );
+    return <LoadingState message="Loading doctors..." />;
   }
 
   if (error) {
@@ -164,11 +159,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#ddd',
     marginHorizontal: 16,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 15,
-    color: '#666',
   },
   errorText: {
     fontSize: 15,
