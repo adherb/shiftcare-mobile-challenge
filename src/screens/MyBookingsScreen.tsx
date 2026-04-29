@@ -158,13 +158,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   cancelButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 8,
     minHeight: 44,
     justifyContent: 'center',
+    backgroundColor: '#fde8e8',
+    borderRadius: 20,
   },
   cancelText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
     color: '#c00',
   },
