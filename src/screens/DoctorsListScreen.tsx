@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -38,6 +38,19 @@ function formatTimezone(tz: string): string {
 export default function DoctorsListScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { doctors, loading, error, refetch } = useDoctors();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => navigation.navigate('MyBookings')}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Text style={styles.headerLink}>My bookings</Text>
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   if (loading) {
     return (
@@ -97,6 +110,11 @@ export default function DoctorsListScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerLink: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#007AFF',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
