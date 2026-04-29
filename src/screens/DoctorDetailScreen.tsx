@@ -18,24 +18,10 @@ import useDoctors from '../hooks/useDoctors';
 import { useBookings } from '../context/BookingsContext';
 import { generateSlots, slotKey } from '../utils/slots';
 import { Slot } from '../types';
+import { formatTimeForDisplay, formatTimezone } from '../utils/format';
 
 type RouteProps = RouteProp<RootStackParamList, 'DoctorDetail'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'DoctorDetail'>;
-
-function formatTimeForDisplay(time24: string): string {
-  const [hourStr, minuteStr] = time24.split(':');
-  const hour = Number(hourStr);
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minuteStr} ${period}`;
-}
-
-function formatTimezone(tz: string): string {
-  const parts = tz.split('/');
-  const city = parts[parts.length - 1].replace(/_/g, ' ');
-  const country = parts[0];
-  return `${city}, ${country}`;
-}
 
 function formatDayLabel(date: Date): { weekday: string; day: string } {
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });

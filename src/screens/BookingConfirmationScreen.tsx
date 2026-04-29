@@ -6,36 +6,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookings } from '../context/BookingsContext';
 import useDoctors from '../hooks/useDoctors';
+import { formatDateForDisplay, formatTimeForDisplay, formatTimezone } from '../utils/format';
 
 type RouteProps = RouteProp<RootStackParamList, 'BookingConfirmation'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'BookingConfirmation'>;
-
-// Parse manually to avoid UTC shift from new Date(isoString).
-function formatDateForDisplay(isoDate: string): string {
-  const [year, month, day] = isoDate.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  return new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  }).format(date);
-}
-
-function formatTimezone(tz: string): string {
-  const parts = tz.split('/');
-  const city = parts[parts.length - 1].replace(/_/g, ' ');
-  const country = parts[0];
-  return `${city}, ${country}`;
-}
-
-function formatTimeForDisplay(time24: string): string {
-  const [hourStr, minuteStr] = time24.split(':');
-  const hour = Number(hourStr);
-  const minute = minuteStr;
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minute} ${period}`;
-}
 
 export default function BookingConfirmationScreen() {
   const route = useRoute<RouteProps>();

@@ -18,34 +18,13 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookings } from '../context/BookingsContext';
 import { Booking } from '../types';
+import { formatDateForDisplay, formatTimeForDisplay } from '../utils/format';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'MyBookings'>;
-
-// Duplicated from BookingConfirmationScreen. Worth extracting to a
-// shared utility if a third caller appears.
-function formatDateForDisplay(isoDate: string): string {
-  // Parse manually to avoid UTC shift from new Date(isoString).
-  const [year, month, day] = isoDate.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  return new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  }).format(date);
-}
-
-function formatTimeForDisplay(time24: string): string {
-  const [hourStr, minuteStr] = time24.split(':');
-  const hour = Number(hourStr);
-  const minute = minuteStr;
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minute} ${period}`;
-}
 
 // Both date and startTime are zero-padded so lexicographic comparison
 // gives correct chronological order.

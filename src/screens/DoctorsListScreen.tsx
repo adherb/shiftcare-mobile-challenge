@@ -15,6 +15,7 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import useDoctors from '../hooks/useDoctors';
 import { Ionicons } from '@expo/vector-icons';
 import { Doctor } from '../types';
+import { formatTimezone } from '../utils/format';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DoctorsList'>;
 
@@ -26,13 +27,6 @@ function getAvatarColor(name: string): string {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
-
-function formatTimezone(tz: string): string {
-  const parts = tz.split('/');
-  const city = parts[parts.length - 1].replace(/_/g, ' ');
-  const country = parts[0];
-  return `${city}, ${country}`;
 }
 
 export default function DoctorsListScreen() {
